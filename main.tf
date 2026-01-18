@@ -142,7 +142,7 @@ resource "aws_instance" "web" {
                 yum install -y httpd
                 systemctl start httpd
                 systemctl enable httpd
-                echo "<h1 style='color:red;'>¡Tengo IPs FIJAS! 🌵</h1>" > /var/www/html/index.html
+                echo "<h1 style='color:green;'>¡Tengo IPs FIJAS! 🌵</h1>" > /var/www/html/index.html
                 EOF
 
   tags = { Name = "Servidor-Web-Espana" }
