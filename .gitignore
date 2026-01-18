@@ -1,0 +1,14 @@
+# Directorios locales de Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+errored.tfstate
+
+# Archivos de variables con secretos (Opcional, pero buena práctica)
+terraform.tfvars
+*.auto.tfvars
+
+# Claves SSH (Por si acaso las copiaste a la carpeta)
+*.pem
+id_rsa
