@@ -199,4 +199,9 @@ resource "aws_dynamodb_table" "terraform_locks" {
   tags = {
     Name = "Terraform-Lock-Table"
   }
-}    
+}   
+
+# Sacamos de la subred una vez creada
+data "aws_subnet" "selected" {
+  id = aws_subnet.frontend.id
+}
