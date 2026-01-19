@@ -135,7 +135,7 @@ data "aws_ami" "amazon_linux" {
 # La instancia en si.
 resource "aws_instance" "web" {
   ami           = data.aws_ami.amazon_linux.id
-  instance_tipe = var.tipo_instancia
+  instance_type = var.tipo_instancia
   subnet_id     = aws_subnet.frontend.id
   private_ip    = "10.0.1.50"
 
