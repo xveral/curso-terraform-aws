@@ -19,6 +19,13 @@ terraform {
 provider "aws" {
     region = var.region_aws  # usamos la region de ES en zaragoza
 }
+
+# Consulto zonas de disponibilidad en la region
+data "aws_availability_zones" "available" {
+    state = "available"
+}
+
+# VPC
 resource "aws_vpc" "mi_vpc" {
     cidr_block = "10.0.0.0/16"
 
@@ -31,10 +38,11 @@ resource "aws_vpc" "mi_vpc" {
 resource "aws_subnet" "frontend" {
     vpc_id = aws_vpc.mi_vpc.id # Referencio la vpc de arriba
     cidr_block = "10.0.1.0/24" # creamos subred con 254 ips
-    availability_zone = "eu-south-2a" # usamos la zona a de spain
+    # Uso la zona disponible en la lista
+    availability_zone = data.aws_availability_zones
 
     tags = {
-        Name = "Subred-Frontend-ES"
+        Name = "Subred-Frontend-Dinamica"
     }
 }
 
