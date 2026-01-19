@@ -16,7 +16,12 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
-
+      
+      - name: Create dummy SSH key
+        run: |
+          mkdir -p ~/.ssh
+          touch ~/.ssh/id_rsa.pub
+      
       - name: Terraform Init
         run: terraform init -backend=false # No necesita acceso a tu AWS S3 para validar sintaxis
 
