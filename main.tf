@@ -109,7 +109,7 @@ resource "aws_security_group" "servidor_sg" {
 
 # Llave SSH para acceso a la instancia
 resource "aws_key_pair" "mi_key" {
-    key_name = "mi-llave-mac"
+    key_name   = "mi-llave-${timestamp()}" # Esto le añade la fecha/hora al nombre
     public_key = file("~/.ssh/id_rsa.pub")
 }
 
