@@ -39,7 +39,7 @@ resource "aws_subnet" "frontend" {
     vpc_id = aws_vpc.mi_vpc.id # Referencio la vpc de arriba
     cidr_block = "10.0.1.0/24" # creamos subred con 254 ips
     # Uso la zona disponible en la lista
-    availability_zone = data.aws_availability_zones
+    availability_zone = data.aws_availability_zones.available.names[0]
 
     tags = {
         Name = "Subred-Frontend-Dinamica"
