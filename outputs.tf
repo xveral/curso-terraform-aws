@@ -21,3 +21,8 @@ output "id_fisico_zona" {
   description = "ID físico real en Aragón (eus2-az1 (zgz), az2 (Huesca) o az3 (Teruel))"
   value       = data.aws_subnet.selected.availability_zone_id
 }
+
+output "zonas_disponibles" {
+  description = "Zonas de disponibilidad disponibles en AWS para la región"
+  value       = data.aws_availability_zones.available.names
+}
