@@ -171,9 +171,9 @@ resource "aws_eip" "ip_fija" {
 
 # 1. Cubo S3 para guardar terraform state
 resource "aws_s3_bucket" "terraform_state" {
-  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
-  bucket        = "tf-state-xavi-2024-zaragoza-v1" # El nombre del bucket debe ser unico a nivel global
-  force_destroy = true                             # Para borrar el bucket aunque tenga objetos dentro
+  count         = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
+  bucket        = "tf-state-xavi-2024-zaragoza-v1"         # El nombre del bucket debe ser unico a nivel global
+  force_destroy = true                                     # Para borrar el bucket aunque tenga objetos dentro
 
   tags = {
     Name = "Bucket-Terraform-State"
@@ -182,7 +182,7 @@ resource "aws_s3_bucket" "terraform_state" {
 
 # Habilito versionado en el bucket
 resource "aws_s3_bucket_versioning" "versioning" {
-  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
+  count  = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
   bucket = aws_s3_bucket.terraform_state[0].id
   versioning_configuration {
     status = "Enabled"
@@ -191,7 +191,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 
 # 2. Tabla DynamoDB para locking
 resource "aws_dynamodb_table" "terraform_locks" {
-  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
+  count        = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
   name         = "terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID" # Clave primaria
