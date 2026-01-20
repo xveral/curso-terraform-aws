@@ -30,7 +30,7 @@ resource "aws_vpc" "mi_vpc" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-    Name = "VPC-Espana"
+    Name = "VPC-${terraform.workspace}" # Nombre dinamico segun workspace
   }
 }
 
@@ -117,7 +117,7 @@ resource "aws_security_group" "servidor_sg" {
 
 # Llave SSH para acceso a la instancia
 resource "aws_key_pair" "mi_key" {
-  key_name   = "mi-llave-${timestamp()}" # Esto le añade la fecha/hora al nombre
+  key_name   = "key-${terraform.workspace}" # Nombre dinamico segun workspace
   public_key = file("~/.ssh/id_rsa.pub")
 }
 
@@ -153,7 +153,7 @@ resource "aws_instance" "web" {
                 echo "<h1 style='color:green;'>¡Tengo IPs FIJAS! 🌵</h1>" > /var/www/html/index.html
                 EOF
 
-  tags = { Name = "Servidor-Web-Espana" }
+  tags = { Name = "Servidor-${terraform.workspace}" }
 }
 
 # Creo una elastic ip fija
@@ -171,6 +171,7 @@ resource "aws_eip" "ip_fija" {
 
 # 1. Cubo S3 para guardar terraform state
 resource "aws_s3_bucket" "terraform_state" {
+  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
   bucket        = "tf-state-xavi-2024-zaragoza-v1" # El nombre del bucket debe ser unico a nivel global
   force_destroy = true                             # Para borrar el bucket aunque tenga objetos dentro
 
@@ -181,7 +182,8 @@ resource "aws_s3_bucket" "terraform_state" {
 
 # Habilito versionado en el bucket
 resource "aws_s3_bucket_versioning" "versioning" {
-  bucket = aws_s3_bucket.terraform_state.id
+  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
+  bucket = aws_s3_bucket.terraform_state[0].id
   versioning_configuration {
     status = "Enabled"
   }
@@ -189,6 +191,7 @@ resource "aws_s3_bucket_versioning" "versioning" {
 
 # 2. Tabla DynamoDB para locking
 resource "aws_dynamodb_table" "terraform_locks" {
+  count = terraform.workspace == "default" ? 1 : 0 # Solo en workspace default
   name         = "terraform-locks"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID" # Clave primaria
