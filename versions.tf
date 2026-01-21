@@ -14,14 +14,15 @@ terraform {
     encrypt                = true              # Encriptacion del state en el bucket
     skip_region_validation = true
   }
+}
   provider "aws" {
     region = var.region_aws # usamos la region de ES en zaragoza
-  }
-  # Opcional: Etiquetas por defecto para todos los recursos
-  default_tags {
-    tags = {
-      Owner     = "Xavi"
-      ManagedBy = "Terraform"
+  
+    # Opcional: Etiquetas por defecto para todos los recursos
+    default_tags {
+      tags = {
+        Owner     = "Xavi"
+        ManagedBy = "Terraform"
+      }
     }
   }
-}
