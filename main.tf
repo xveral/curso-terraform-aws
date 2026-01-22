@@ -112,10 +112,11 @@ data "aws_ami" "amazon_linux" {
 
 # La instancia en si.
 resource "aws_instance" "web" {
+  count         = var.cantidad_instancias # Cantidad de instancias a crear
   ami           = data.aws_ami.amazon_linux.id
   instance_type = var.tipo_instancia
   subnet_id     = aws_subnet.frontend.id
-  private_ip    = "10.0.1.50"
+  # private_ip    = "10.0.1.50" " # quitamos ip fija para que el bucle funcione"
 
   vpc_security_group_ids      = [aws_security_group.servidor_sg.id]
   key_name                    = aws_key_pair.mi_key.key_name
@@ -136,11 +137,12 @@ resource "aws_instance" "web" {
 
 # Creo una elastic ip fija
 resource "aws_eip" "ip_fija" {
-  instance = aws_instance.web.id
+  count    = var.cantidad_instancias # Cantidad de elastic ip a crear
   domain   = "vpc"
+  instance = aws_instance.web[count.index].id
 
   tags = {
-    Name = "Mi-IP-Elastica-Fija"
+    Name = "IP-Elastica-${count.index}"
   }
 }
 

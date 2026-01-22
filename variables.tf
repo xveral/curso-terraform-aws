@@ -15,3 +15,9 @@ variable "puerto_web" {
   type        = number
   default     = 80
 }
+
+variable "cantidad_instancias" {
+  description = "Cantidad de instancias EC2 a desplegar"
+  type        = number
+  default     = 2
+}
