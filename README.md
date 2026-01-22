@@ -1,38 +1,48 @@
-# 🚀 AWS Infrastructure with Terraform (Spain Region)
+# 🚀 AWS Scalable Infrastructure with Terraform (Spain Region)
 
-Este repositorio contiene una infraestructura básica en AWS desplegada mediante **Terraform**, optimizada para la región de **España (eu-south-2)** en Zaragoza.
+Este repositorio contiene una infraestructura automatizada en AWS desplegada mediante **Terraform**, optimizada para la región de **España (eu-south-2)**.
+
+El proyecto ha evolucionado para soportar **Múltiples Entornos (Workspaces)**, **Alta Disponibilidad** mediante bucles de instancias y **CI/CD** con GitHub Actions.
 
 ## 🏗️ Arquitectura
-La infraestructura incluye:
-- **VPC** personalizada con direccionamiento `10.0.0.0/16`.
-- **Subredes Dinámicas**: Selección automática de Zonas de Disponibilidad (Zaragoza/Huesca) mediante bloques `data`.
-- **Instancia EC2**: Servidor Amazon Linux 2023 con servidor web Apache autoinstalado via `user_data`.
-- **Seguridad**: Security Groups configurados para acceso SSH (22) y HTTP (80).
-- **Identidad**: Uso de claves SSH locales (`id_rsa.pub`).
-- **Estado Remoto**: Configuración de Backend en **S3** con bloqueo mediante **DynamoDB**.
+La infraestructura despliega los siguientes recursos:
+
+* **Networking:**
+    * VPC personalizada (`10.0.0.0/16`) con nombres dinámicos por entorno.
+    * Subredes Públicas (Frontend) y Privadas (Backend).
+    * Internet Gateway y Tablas de Enrutamiento.
+    * Security Groups para acceso SSH (22) y HTTP (80).
+* **Computación (Scalable):**
+    * Despliegue de **múltiples instancias EC2** (definido por variable) en bucle.
+    * Sistema Operativo Amazon Linux 2023.
+    * Servidor web Apache preinstalado (`user_data`) mostrando el índice de la instancia.
+    * Asociación automática de **Elastic IPs** para cada instancia.
+* **Estado y Gestión:**
+    * **Backend Remoto:** Estado guardado en S3 (`eu-south-2`) con bloqueo en DynamoDB.
+    * **Lógica Condicional:** El Bucket S3 y la tabla DynamoDB solo se crean en el workspace `default`.
+
+## 📂 Estructura del Proyecto
+
+El código se ha modularizado para seguir las mejores prácticas:
+
+| Archivo | Descripción |
+| :--- | :--- |
+| `main.tf` | Definición de recursos principales (VPC, EC2, SG). |
+| `variables.tf` | Variables de entrada configurables (cantidad de servidores, región, etc.). |
+| `outputs.tf` | Información de retorno (URLs, IPs, Comandos SSH). |
+| `versions.tf` | Configuración del Provider AWS y Backend S3. |
+| `.github/workflows/` | Pipeline de CI para validar sintaxis y formato automáticamente. |
 
 ## 🛠️ Requisitos previos
-1. Tener instalado [Terraform](https://www.terraform.io/).
-2. Configurar [AWS CLI](https://aws.amazon.com/cli/) con tus credenciales.
-3. Habilitar la región `eu-south-2` en tu cuenta de AWS.
+1.  [Terraform](https://www.terraform.io/) instalado (v1.0+).
+2.  [AWS CLI](https://aws.amazon.com/cli/) configurado con credenciales.
+3.  Un par de claves SSH generado en `~/.ssh/id_rsa.pub`.
 
-## 🚀 Despliegue rápido
+## 🚀 Guía de Uso con Workspaces
 
-1. **Clonar el repo:**
-   ```bash
-   git clone [https://github.com/tu-usuario/curso-terraform-aws.git](https://github.com/tu-usuario/curso-terraform-aws.git)
-   cd curso-terraform-aws
+Este proyecto utiliza **Terraform Workspaces** para separar entornos (ej. `dev`, `prod`).
 
-Nota: Inicializar (Modo Local): Comenta el bloque backend "s3" en main.tf si es la primera vez que lo lanzas en una cuenta nueva, then:
+### 1. Inicialización
+Descarga los providers y configura el backend.
+```bash
 terraform init
-terraform apply
-Activar Backend Remoto: Descomenta el bloque backend "s3" y migra el estado, then:
-terrform init
-
-Al finalizar, el proyecto te devolverá:
-
-url_web: Dirección para ver el "Hola xxxxx.
-
-zona_despliegue: AZ donde ha caído la instancia.
-
-id_fisico_zona: ID real del centro de datos en Aragón.
