@@ -46,3 +46,12 @@ Este proyecto utiliza **Terraform Workspaces** para separar entornos (ej. `dev`,
 Descarga los providers y configura el backend.
 ```bash
 terraform init
+Crear un nuevo entorno (ej. desarrollo)
+```bash
+terraform workspace new dev
+Listar entornos disponibles
+```bash
+terraform workspace list
+Cambiar entre entornos
+```bash
+terraform workspace select dev
