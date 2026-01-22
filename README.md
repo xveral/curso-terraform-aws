@@ -46,12 +46,59 @@ Este proyecto utiliza **Terraform Workspaces** para separar entornos (ej. `dev`,
 Descarga los providers y configura el backend.
 ```bash
 terraform init
+```
+### 2. Gestión de Entornos
+Nunca trabajamos en default para desplegar aplicaciones. Creamos entornos aislados:
 Crear un nuevo entorno (ej. desarrollo)
 ```bash
+# Crear un nuevo entorno (ej. desarrollo)
 terraform workspace new dev
-Listar entornos disponibles
-```bash
+
+# Listar entornos disponibles
 terraform workspace list
-Cambiar entre entornos
+
+# Cambiar entre entornos
+terraform workspace select dev
+```
+### 3. Personalizar el Despliegue
+Puedes cambiar cuántas máquinas quieres editando variables.tf o pasando la variable por comando:
+```bash
+# Desplegar 3 servidores en el entorno actual
+terraform apply -var="cantidad_instancias=3"
+```
+### 4. Limpieza (Destroy)
+⚠️ Importante: Debido a la dependencia del backend, seguimos este orden para destruir:
+1. Destruir entornos de aplicación (dev, prod):
 ```bash
 terraform workspace select dev
+terraform destroy
+```
+2. Destruir infraestructura base (Solo si quieres borrar el Bucket S3):
+```bash
+terraform workspace select default
+terraform destroy
+```
+⚙️ Variables Configurables (variables.tf)
+
+| Variable            | Descripción                     | Valor por defecto |
+|---------------------|---------------------------------|-------------------|
+| `region_aws`       | Región de despliegue           | `eu-south-2` (Spain) |
+| `cantidad_instancias` | Número de servidores a crear    | `2`               |
+| `tipo_instancia`    | Tamaño de la EC2               | `t3.micro`        |
+| `puerto_web`        | Puerto para el Security Group   | `80`              |
+
+📊 Outputs
+Al finalizar, tendremos listas de acceso para todas las máquinas:
+
+urls_webs: Lista de URLs HTTP para acceder a cada servidor.
+
+comandos_ssh: Lista de comandos directos para conectar por terminal.
+
+ids_instancias: IDs de AWS de los recursos creados.
+
+🤖 CI/CD (GitHub Actions)
+Este repositorio incluye un flujo de trabajo automático que se ejecuta en cada push a la rama main:
+
+Format Check: Verifica que el código esté bien indentado (terraform fmt).
+
+Validation: Comprueba la sintaxis y lógica (terraform validate).
