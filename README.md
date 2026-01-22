@@ -88,6 +88,7 @@ terraform destroy
 | `puerto_web`        | Puerto para el Security Group   | `80`              |
 
 📊 Outputs
+
 Al finalizar, tendremos listas de acceso para todas las máquinas:
 
 urls_webs: Lista de URLs HTTP para acceder a cada servidor.
@@ -97,6 +98,7 @@ comandos_ssh: Lista de comandos directos para conectar por terminal.
 ids_instancias: IDs de AWS de los recursos creados.
 
 🤖 CI/CD (GitHub Actions)
+
 Este repositorio incluye un flujo de trabajo automático que se ejecuta en cada push a la rama main:
 
 Format Check: Verifica que el código esté bien indentado (terraform fmt).
