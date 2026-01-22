@@ -5,7 +5,7 @@ output "urls_web" {
 
 output "comando_ssh" {
   description = "SSH con IP elastica"
-  value       = [for ip in aws_eip.ip_fija[*].public_ip : "ssh ec2-user@{ip}"]
+  value       = [for ip in aws_eip.ip_fija[*].public_ip : "ssh ec2-user@${ip}"]
 }
 
 output "ips_privadas_fijas" {
